@@ -1,0 +1,76 @@
+# Copyright (c) 2013-2016 The Bitcoin Core developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+TESTS += test/test_catcoin
+bin_PROGRAMS += test/test_catcoin
+TEST_SRCDIR = test
+TEST_BINARY=test/test_catcoin$(EXEEXT)
+
+JSON_TEST_FILES = 
+
+RAW_TEST_FILES =
+
+GENERATED_TEST_FILES = $(JSON_TEST_FILES:.json=.json.h) $(RAW_TEST_FILES:.raw=.raw.h)
+
+# test_catcoin binary #
+CATCOIN_TESTS =\
+  test/base32_tests.cpp \
+  test/key_tests.cpp \
+  test/serialize_tests.cpp \
+  test/test_catcoin.cpp \
+  test/test_catcoin.h \
+  test/test_catcoin_main.cpp \
+  test/testutil.cpp \
+  test/testutil.h 
+
+test_test_catcoin_SOURCES = $(CATCOIN_TESTS) $(JSON_TEST_FILES) $(RAW_TEST_FILES)
+test_test_catcoin_CPPFLAGS = $(AM_CPPFLAGS) $(CATCOIN_INCLUDES) -I$(builddir)/test/ $(TESTDEFS) $(EVENT_CFLAGS)
+test_test_catcoin_LDADD = $(LIBCATCOIN_SERVER) $(LIBCATCOIN_CLI) $(LIBCATCOIN_COMMON) $(LIBCATCOIN_UTIL) $(LIBCATCOIN_CONSENSUS) $(LIBCATCOIN_CRYPTO) $(LIBUNIVALUE) \
+  $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) $(BOOST_LIBS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(LIBSECP256K1) $(EVENT_LIBS) $(EVENT_PTHREADS_LIBS)
+test_test_catcoin_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+if ENABLE_WALLET
+test_test_catcoin_LDADD += $(LIBCATCOIN_WALLET)
+endif
+
+test_test_catcoin_LDADD += $(LIBCATCOIN_CONSENSUS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS)
+test_test_catcoin_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static
+
+if ENABLE_ZMQ
+test_test_catcoin_LDADD += $(ZMQ_LIBS)
+endif
+#
+
+nodist_test_test_catcoin_SOURCES = $(GENERATED_TEST_FILES)
+
+$(CATCOIN_TESTS): $(GENERATED_TEST_FILES)
+
+CLEAN_CATCOIN_TEST = test/*.gcda test/*.gcno $(GENERATED_TEST_FILES)
+
+CLEANFILES += $(CLEAN_CATCOIN_TEST)
+
+catcoin_test: $(TEST_BINARY)
+
+catcoin_test_check: $(TEST_BINARY) FORCE
+	$(MAKE) check-TESTS TESTS=$^
+
+catcoin_test_clean : FORCE
+	rm -f $(CLEAN_CATCOIN_TEST) $(test_test_catcoin_OBJECTS) $(TEST_BINARY)
+
+check-local:
+	@echo "Running test/util/catcoin-util-test.py..."
+	$(top_builddir)/test/util/catcoin-util-test.py
+	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C secp256k1 check
+if EMBEDDED_UNIVALUE
+	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C univalue check
+endif
+
+%.json.h: %.json
+	@$(MKDIR_P) $(@D)
+	@{ \
+	 echo "namespace json_tests{" && \
+	 echo "static unsigned const char $(*F)[] = {" && \
+	 $(HEXDUMP) -v -e '8/1 "0x%02x, "' -e '"\n"' $< | $(SED) -e 's/0x  ,//g' && \
+	 echo "};};"; \
+	} > "$@.new" && mv -f "$@.new" "$@"
+	@echo "Generated $@"

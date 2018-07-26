@@ -1,0 +1,6 @@
+usr/local/bin/catcoin-qt usr/bin
+share/pixmaps/catcoin32.xpm usr/share/pixmaps
+share/pixmaps/catcoin16.xpm usr/share/pixmaps
+share/pixmaps/catcoin128.png usr/share/pixmaps
+debian/catcoin-qt.desktop usr/share/applications
+debian/catcoin-qt.protocol usr/share/kde4/services/

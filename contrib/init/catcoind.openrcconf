@@ -1,0 +1,33 @@
+# /etc/conf.d/catcoind: config file for /etc/init.d/catcoind
+
+# Config file location
+#CATCOIND_CONFIGFILE="/etc/catcoin/catcoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $CATCOIND_USER)
+#CATCOIND_PIDDIR="/var/run/catcoind"
+
+# What filename to give the pidfile
+#CATCOIND_PIDFILE="${CATCOIND_PIDDIR}/catcoind.pid"
+
+# Where to write catcoind data (be mindful that the blockchain is large)
+#CATCOIND_DATADIR="/var/lib/catcoind"
+
+# User and group to own catcoind process
+#CATCOIND_USER="catcoin"
+#CATCOIND_GROUP="catcoin"
+
+# Path to catcoind executable
+#CATCOIND_BIN="/usr/bin/catcoind"
+
+# Nice value to run catcoind under
+#CATCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#CATCOIND_OPTS=""
+
+# The timeout in seconds OpenRC will wait for catcoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+CATCOIND_SIGTERM_TIMEOUT=60

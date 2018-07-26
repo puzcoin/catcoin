@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=Catcoin Core
+Comment=Connect to the Catcoin P2P Network
+Comment[de]=Verbinde mit dem Catcoin peer-to-peer Netzwerk
+Comment[fr]=Catcoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Catcoin, eşten eşe kriptografik sanal para birimi
+Exec=catcoin-qt %u
+Terminal=false
+Type=Application
+Icon=catcoin128
+MimeType=x-scheme-handler/catcoin;
+Categories=Office;Finance;
+StartupWMClass=Catcoin-qt

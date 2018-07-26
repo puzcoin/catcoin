@@ -1,0 +1,8 @@
+/usr/bin/catcoin-cli		--	gen_context(system_u:object_r:catcoin_exec_t,s0)
+/usr/sbin/catcoind		--	gen_context(system_u:object_r:catcoin_exec_t,s0)
+/usr/lib(64)?/catcoin/catcoind		--	gen_context(system_u:object_r:catcoin_exec_t,s0)
+
+/etc/catcoin(/.*)?		gen_context(system_u:object_r:catcoin_conf_t,s0)
+/var/lib/catcoin(/.*)?		gen_context(system_u:object_r:catcoin_var_lib_t,s0)
+
+(/var)?/run/catcoind(/.*)?   gen_context(system_u:object_r:catcoin_var_run_t,s0)
